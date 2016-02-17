@@ -3,9 +3,9 @@
 Name: Laura Donovan
 Modified on: 2/11/16
 
-Aspects correctly implemented: CSS code validates fine, did not edit HTML
-Aspects incorrectly implemented: image not showing up at all on webpage
+Aspects correctly implemented: CSS code validates fine, did not edit HTML, image shows up on page
+Aspects incorrectly implemented: images show up in wrong order
 
-Collaborated with: HTML code from Ming Chow
+Collaborated with: HTML code from Ming Chow, Tom Rind
 
-Hours spent: 1 (started 10:30 pm 2/11/16)
+Hours spent: 2 ( 10:30-11:30 pm 2/11/16) & (6-7 pm 2/16/16)

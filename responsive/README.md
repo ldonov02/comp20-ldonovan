@@ -1,11 +1,11 @@
 # responsive
 
 Name: Laura Donovan
-Modified on: 2/11/16
+Modified on: 2/16/16
 
-Aspects correctly implemented: CSS code validates fine, did not edit HTML, image shows up on page
-Aspects incorrectly implemented: images show up in wrong order
+Aspects correctly implemented: HTML and CSS code validates fine, did not edit HTML, images show up on page in the right order
+Aspects incorrectly implemented: N/A, as far as I know
 
-Collaborated with: HTML code from Ming Chow, Tom Rind
+Collaborated with: HTML code from Ming Chow, help with CSS syntax from Tom Rind
 
-Hours spent: 2 ( 10:30-11:30 pm 2/11/16) & (6-7 pm 2/16/16)
+Hours spent: 2.5

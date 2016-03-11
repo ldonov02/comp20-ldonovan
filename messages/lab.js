@@ -2,8 +2,8 @@
 function parse(){
 
 	request = new XMLHttpRequest();
-	
-	request.open('get', 'data.json', true);
+
+	request.open("get", "data.json", true);
 	request.onreadystatechange = parseMessage;
 	request.send(null);
 
@@ -16,8 +16,8 @@ function parse(){
 
 			for (i = 0; i < messageText.length; i++){
 				elem.innerHTML += "<p><span id='text'>" + messageText[i]["content"] 
-				+ "  " + messageText[i]["username"] + "</span></p>";
+				+ " " + "<span id='name'>" + messageText[i]["username"] + "</span></span></p>";
 			}
-		}
+		} 
 	}
 }

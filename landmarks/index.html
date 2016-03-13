@@ -8,15 +8,23 @@
 </head>
 <body>
 	<div id="map">
+
 	<script>
 		elem = document.getElementById("map");
-		locateMe;
+		console.log("l");
+		locateMe();
 
+
+//find current location and set position
 		function locateMe(){
+			console.log("locating");
 			if (navigator.geolocation){
+				console.log("located!");
 				navigator.geolocation.getCurrentPosition(function(pos){
 					elem.innerHTML = "Latitude: " + pos.coords.latitude + "<br> Longitude: " + pos.coords.longitude;
 				});
+			} else {
+				elem.innerHTML = "Oops! Geolocation not supported!";
 			}
 		}
 

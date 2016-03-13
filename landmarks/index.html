@@ -7,6 +7,20 @@
 	<script> </script>
 </head>
 <body>
+	<div id="map">
+	<script>
+		elem = document.getElementById("map");
+		locateMe;
 
+		function locateMe(){
+			if (navigator.geolocation){
+				navigator.geolocation.getCurrentPosition(function(pos){
+					elem.innerHTML = "Latitude: " + pos.coords.latitude + "<br> Longitude: " + pos.coords.longitude;
+				});
+			}
+		}
+
+	</script>
+</div>
 </body>
 </html>

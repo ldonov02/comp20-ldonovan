@@ -11,15 +11,13 @@
 
 	<script>
 		elem = document.getElementById("map");
-		console.log("l");
 		locateMe();
+		dataExchange();
 
 
 //find current location and set position
 		function locateMe(){
-			console.log("locating");
 			if (navigator.geolocation){
-				console.log("located!");
 				navigator.geolocation.getCurrentPosition(function(pos){
 					elem.innerHTML = "Latitude: " + pos.coords.latitude + "<br> Longitude: " + pos.coords.longitude;
 				});
@@ -27,7 +25,26 @@
 				elem.innerHTML = "Oops! Geolocation not supported!";
 			}
 		}
-
+	// send my location to datastore and receive/parse list of people and landmarks
+		function dataExchange(){
+			request = new XMLHttpRequest;
+			request.open("post", "https://defense-in-derpth.herokuapp.com/sendLocation", true);
+			request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			request.send("login=GLORIA_FLETCHER&lat=42.404976999999995&lng=-71.1224457");
+			request.onreadystatechange = parseResponse; //TODO edit send so it calls locateMe!!
+			function parseResponse(){
+				if (request.readyState == 4 && request.status == 200){
+					data = request.responseText;
+					parsedData = JSON.parse(data);
+					for(i = 0; i < parsedData["people"].length; i++){
+						//create marker for each person
+					} for (i = 0; i < parsedData["landmarks"].length; i++){
+						//create marker for each landmark
+					}
+					console.log("okay");
+				}	
+			}
+		}
 	</script>
 </div>
 </body>

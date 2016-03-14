@@ -11,15 +11,19 @@
 
 	<script>
 		elem = document.getElementById("map");
+		me = "GLORIA_FLETCHER";
 		locateMe();
 		dataExchange();
+		 person = [];
+		 landmark = [];
 
 
 //find current location and set position
 		function locateMe(){
 			if (navigator.geolocation){
 				navigator.geolocation.getCurrentPosition(function(pos){
-					elem.innerHTML = "Latitude: " + pos.coords.latitude + "<br> Longitude: " + pos.coords.longitude;
+					//elem.innerHTML = "Latitude: " + pos.coords.latitude + "<br> Longitude: " + pos.coords.longitude;
+					return pos.coords;
 				});
 			} else {
 				elem.innerHTML = "Oops! Geolocation not supported!";
@@ -27,6 +31,9 @@
 		}
 	// send my location to datastore and receive/parse list of people and landmarks
 		function dataExchange(){
+			var coords_array = [locateMe];
+			console.log(coords_array);
+
 			request = new XMLHttpRequest;
 			request.open("post", "https://defense-in-derpth.herokuapp.com/sendLocation", true);
 			request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -35,13 +42,24 @@
 			function parseResponse(){
 				if (request.readyState == 4 && request.status == 200){
 					data = request.responseText;
+
 					parsedData = JSON.parse(data);
 					for(i = 0; i < parsedData["people"].length; i++){
-						//create marker for each person
+					//	person["name"] = parsedData["people"][i]["login"];
+					//create marker for each person
+					 var temp_array_p = [parsedData["people"][i]["login"], parsedData["people"][i]["lat"], parsedData["people"][i]["lng"]];
+					person.push(temp_array_p);
 					} for (i = 0; i < parsedData["landmarks"].length; i++){
+						var temp_array_l = [parsedData["landmarks"][i]["geometry"]["coordinates"], parsedData["landmarks"][i]["properties"]["Location_Name"], parsedData["landmarks"][i]["properties"]["Details"]];
+						landmark.push(temp_array_l);
 						//create marker for each landmark
+
+
+					/*	{"_id":"56c2bcd5ff1f7c21263cb1eb","type":"Feature","geometry":{"type":"Point","coordinates":[-71.11674492,42.40020378]},"properties":{"Location_Name":"Powder House Park","Details":"<b>Historic Place Name: </b>Powder House Park<BR><b>Address: </b>Powder House Circle<BR><b>City: </b>Somerville<BR><b>County: </b>Middlesex<BR><b>State: </b>MASSACHUSETTS<BR><BR><u>Geographic Coordinates:</u><BR><b>Latitude: </b>42.4002<BR><b>Longitude: </b>-71.11674<BR><BR><b>NPS Reference Number: </b>75000287<BR><b>Date Listed: </b>19750421<BR><b>Notes: </b><BR><b>Type: </b>point<BR><b>Geocode Match: </b>0<BR><BR><p align=\"center\">A Service of:<BR><a href=\"http://www.cr.nps.gov/nr/\">National Register of Historic Places</a><BR><a href=\"http://www.nps.gov/\">National Park Service</a></p>"}},*/
 					}
-					console.log("okay");
+
+				//	var person = [0];
+					console.log(landmark);
 				}	
 			}
 		}

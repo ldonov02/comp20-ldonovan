@@ -11,9 +11,10 @@
 <body>
 	<div id="map">
 
+	<script src="https://maps.googleapis.com/maps/api/js"></script>
 	<script>
-		//elem = document.getElementById("map");
-		me = [];
+		elem = document.getElementById("map");
+	//	me = [];
 		//me.push("name":"GLORIA_FLETCHER");
 	//	me.lat = locateMe("latitude");
 	//	me.long = locateMe("longitude");
@@ -22,23 +23,24 @@
 		dataExchange();
 		 person = [];
 		 landmark = [];
+		 mark_p = [];
 		makeMap();
 
 
 //find current location and set position
-		function locateMe(parameter){
+		function locateMe(){
 			if (navigator.geolocation){
 				navigator.geolocation.getCurrentPosition(function(pos){
 					//elem.innerHTML = "Latitude: " + pos.coords.latitude + "<br> Longitude: " + pos.coords.longitude;
 					//console.log(pos.coords);
 					//return(pos.coords.latitude + "," + pos.coords.longitude);
-					//coords = pos.coords.latitude + "," + pos.coords.longitude;
-					if (parameter == "latitude"){
-						return(pos.coords.latitude);
-					}
-					if (parameter == "longitude"){
-						return(pos.coords.longitude);
-					}
+					//elem.innerHTML = "" + pos.coords.latitude + "," + pos.coords.longitude;
+				//	if (parameter == "latitude"){
+					//	return(pos.coords.latitude);
+					//}
+					//if (parameter == "longitude"){
+				//		return(pos.coords.longitude);
+					//}
 				});
 			} else {
 				document.getElementById("map").innerHTML = "Oops! Geolocation not supported!";
@@ -54,8 +56,9 @@
 			request = new XMLHttpRequest;
 			request.open("post", "https://defense-in-derpth.herokuapp.com/sendLocation", true);
 			request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-			request.send("login=GLORIA_FLETCHER&lat=42.404976999999995&lng=-71.1224457"); //TODO edit send so it calls locateMe!!
+		
 			request.onreadystatechange = parseResponse; 
+				request.send("login=GLORIA_FLETCHER&lat=42.404976999999995&lng=-71.1224457"); //TODO edit send so it calls locateMe!!
 			function parseResponse(){
 				if (request.readyState == 4 && request.status == 200){
 					data = request.responseText;
@@ -72,22 +75,36 @@
 						//create marker for each landmark
 
 					}
-					console.log(landmark);
+					console.log(person);
 				}	
 			}
 		}
 	function makeMap(){
-  //var map = new google.maps.Map(document.getElementById('map-props'), opt);
-  	var ctr = {42.404976999999995,-71.1224457}; // TODO replace w values from locateMe!!
+  	var ctr = new google.maps.LatLng(42.404976999999995,-71.122445); // TODO replace w values from locateMe!!
   	var options = {
-  		center: ctr;
-  		zoom: 8;
+  		center: ctr,
+  		zoom: 9
   	}
 	base_map = new google.maps.Map(document.getElementById("map"), options);
-      //  	center: {lat: -34.397, lng: 150.644},
-        //	zoom: 8
-       // };
-		//access google maps api
+
+	/*for (i = 0; i < person.length; i++){
+		mark_p[i] = new google.maps.Marker({
+			position: new google.maps.LatLng(person[i][1],person[i][2]),
+			animation: google.maps.Animation.DROP,
+			title: person[i][0]
+		});
+	}*/
+
+	var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
+
+	
+	 //marker.setPosition(new google.maps.LatLng(42.404976999999995,-71.122445));
+
+	mark_a = new google.maps.Marker({
+		title: "ME",
+		icon: iconBase + "balloon.png",
+		position: new google.maps.LatLng(34.1183438,-118.3003646)
+	});
 		// make markers for people from arrays in data exchange w forloop
 		//make sure that the marker for me gets overridden with the distance to nearest landmark thing! & special icon
 		// make markers for landmarks from array in data exchange
@@ -95,7 +112,6 @@
 
 	}
 	</script>
-	<script src="https://maps.googleapis.com/maps/api/js"></script>
 </div>
 </body>
 </html>

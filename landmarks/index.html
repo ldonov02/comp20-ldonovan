@@ -12,10 +12,12 @@
 	<script>
 		elem = document.getElementById("map");
 		me = "GLORIA_FLETCHER";
+		console.log(me);
 		locateMe();
 		dataExchange();
 		 person = [];
 		 landmark = [];
+		makeMap();
 
 
 //find current location and set position
@@ -23,7 +25,9 @@
 			if (navigator.geolocation){
 				navigator.geolocation.getCurrentPosition(function(pos){
 					//elem.innerHTML = "Latitude: " + pos.coords.latitude + "<br> Longitude: " + pos.coords.longitude;
-					return pos.coords;
+					console.log(pos.coords);
+					return(pos.coords.latitude + ", " + pos.coords.longitude);
+					//coords = pos.coords.latitude + ", " + pos.coords.longitude;
 				});
 			} else {
 				elem.innerHTML = "Oops! Geolocation not supported!";
@@ -31,14 +35,16 @@
 		}
 	// send my location to datastore and receive/parse list of people and landmarks
 		function dataExchange(){
-			var coords_array = [locateMe];
-			console.log(coords_array);
 
+			coords = "";
+			coords = locateMe();
+			console.log(coords);
+	
 			request = new XMLHttpRequest;
 			request.open("post", "https://defense-in-derpth.herokuapp.com/sendLocation", true);
 			request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-			request.send("login=GLORIA_FLETCHER&lat=42.404976999999995&lng=-71.1224457");
-			request.onreadystatechange = parseResponse; //TODO edit send so it calls locateMe!!
+			request.send("login=GLORIA_FLETCHER&lat=42.404976999999995&lng=-71.1224457"); //TODO edit send so it calls locateMe!!
+			request.onreadystatechange = parseResponse; 
 			function parseResponse(){
 				if (request.readyState == 4 && request.status == 200){
 					data = request.responseText;
@@ -54,15 +60,19 @@
 						landmark.push(temp_array_l);
 						//create marker for each landmark
 
-
-					/*	{"_id":"56c2bcd5ff1f7c21263cb1eb","type":"Feature","geometry":{"type":"Point","coordinates":[-71.11674492,42.40020378]},"properties":{"Location_Name":"Powder House Park","Details":"<b>Historic Place Name: </b>Powder House Park<BR><b>Address: </b>Powder House Circle<BR><b>City: </b>Somerville<BR><b>County: </b>Middlesex<BR><b>State: </b>MASSACHUSETTS<BR><BR><u>Geographic Coordinates:</u><BR><b>Latitude: </b>42.4002<BR><b>Longitude: </b>-71.11674<BR><BR><b>NPS Reference Number: </b>75000287<BR><b>Date Listed: </b>19750421<BR><b>Notes: </b><BR><b>Type: </b>point<BR><b>Geocode Match: </b>0<BR><BR><p align=\"center\">A Service of:<BR><a href=\"http://www.cr.nps.gov/nr/\">National Register of Historic Places</a><BR><a href=\"http://www.nps.gov/\">National Park Service</a></p>"}},*/
 					}
-
-				//	var person = [0];
 					console.log(landmark);
 				}	
 			}
 		}
+	function makeMap(){
+		//access google maps api
+		// make markers for people from arrays in data exchange
+		//make sure that the marker for me gets overridden with the distance to nearest landmark thing! & special icon
+		// make markers for landmarks from array in data exchange
+		//place those on map according to location. 
+
+	}
 	</script>
 </div>
 </body>

@@ -2,6 +2,8 @@
 <html>
 <head>
 	<meta charset='utf-8' />
+	<meta name="viewport" content="initial-scale=1.0">
+
 	<title>Landmarks</title>
 	<link rel="stylesheet" href="style.css" type="text/css" />
 	<script> </script>
@@ -10,9 +12,12 @@
 	<div id="map">
 
 	<script>
-		elem = document.getElementById("map");
-		me = "GLORIA_FLETCHER";
-		console.log(me);
+		//elem = document.getElementById("map");
+		me = [];
+		//me.push("name":"GLORIA_FLETCHER");
+	//	me.lat = locateMe("latitude");
+	//	me.long = locateMe("longitude");
+		//console.log(me);
 		locateMe();
 		dataExchange();
 		 person = [];
@@ -21,24 +26,30 @@
 
 
 //find current location and set position
-		function locateMe(){
+		function locateMe(parameter){
 			if (navigator.geolocation){
 				navigator.geolocation.getCurrentPosition(function(pos){
 					//elem.innerHTML = "Latitude: " + pos.coords.latitude + "<br> Longitude: " + pos.coords.longitude;
-					console.log(pos.coords);
-					return(pos.coords.latitude + ", " + pos.coords.longitude);
-					//coords = pos.coords.latitude + ", " + pos.coords.longitude;
+					//console.log(pos.coords);
+					//return(pos.coords.latitude + "," + pos.coords.longitude);
+					//coords = pos.coords.latitude + "," + pos.coords.longitude;
+					if (parameter == "latitude"){
+						return(pos.coords.latitude);
+					}
+					if (parameter == "longitude"){
+						return(pos.coords.longitude);
+					}
 				});
 			} else {
-				elem.innerHTML = "Oops! Geolocation not supported!";
+				document.getElementById("map").innerHTML = "Oops! Geolocation not supported!";
 			}
 		}
 	// send my location to datastore and receive/parse list of people and landmarks
 		function dataExchange(){
 
-			coords = "";
-			coords = locateMe();
-			console.log(coords);
+		//	coords = "";
+		//	coords = locateMe();
+		//	console.log(coords);
 	
 			request = new XMLHttpRequest;
 			request.open("post", "https://defense-in-derpth.herokuapp.com/sendLocation", true);
@@ -66,14 +77,25 @@
 			}
 		}
 	function makeMap(){
+  //var map = new google.maps.Map(document.getElementById('map-props'), opt);
+  	var ctr = {42.404976999999995,-71.1224457}; // TODO replace w values from locateMe!!
+  	var options = {
+  		center: ctr;
+  		zoom: 8;
+  	}
+	base_map = new google.maps.Map(document.getElementById("map"), options);
+      //  	center: {lat: -34.397, lng: 150.644},
+        //	zoom: 8
+       // };
 		//access google maps api
-		// make markers for people from arrays in data exchange
+		// make markers for people from arrays in data exchange w forloop
 		//make sure that the marker for me gets overridden with the distance to nearest landmark thing! & special icon
 		// make markers for landmarks from array in data exchange
 		//place those on map according to location. 
 
 	}
 	</script>
+	<script src="https://maps.googleapis.com/maps/api/js"></script>
 </div>
 </body>
 </html>

@@ -10,7 +10,6 @@
 </head>
 <body>
 	<div id="map">
-
 	<script src="https://maps.googleapis.com/maps/api/js"></script>
 	<script>
 		locateMe();
@@ -18,7 +17,6 @@
 		 landmark = [];
 		 mark_p = [];
 		 mark_l = [];
-
 
 //find current location and set position
 		function locateMe(){
@@ -60,127 +58,123 @@
 			}
 		}
 
- // initialize map, put markers, make infowindow
-	function makeMap(){
-  	var ctr = new google.maps.LatLng(mylat,mylng); 
-  	var options = {
+	 // initialize map, put markers, make infowindow
+		function makeMap(){
+  		var ctr = new google.maps.LatLng(mylat,mylng); 
+  		var options = {
   		center: ctr,
   		zoom: 12
-  	}
-	map = new google.maps.Map(document.getElementById("map"), options);
-	infowindow = new google.maps.InfoWindow(); 
-	//create markers
-	for (i = 0; i < person.length; i++){
-		if (person[i][0] != "GLORIA_FLETCHER"){
-			mark_p[i] = new google.maps.Marker({
-				title: person[i][0],
-				map: map,
-				icon: "partyhat.jpg",
-				position: new google.maps.LatLng(person[i][1],person[i][2]),
-				clickable: true
-			});
-			attachListener(mark_p[i], person[i][0] + findDistance(person[i][1], person[i][2]));
-		}else{
-			var mark_a = new google.maps.Marker({
-				title: "ME",
-				map: map,
-				icon: "smolballoon.png", // TODO make transparent bg
-				position: new google.maps.LatLng(mylat,mylng),
-				clickable: true
-			});
-			attachListener(mark_a, "<p>GLORIA_FLETCHER</p>" + findNearestLandmark());
+ 	 	}
+		map = new google.maps.Map(document.getElementById("map"), options);
+		infowindow = new google.maps.InfoWindow(); 
+		//create markers
+		for (i = 0; i < person.length; i++){
+			if (person[i][0] != "GLORIA_FLETCHER"){
+				mark_p[i] = new google.maps.Marker({
+					title: person[i][0],
+					map: map,
+					icon: "partyhat.jpg",
+					position: new google.maps.LatLng(person[i][1],person[i][2]),
+					clickable: true
+				});
+				attachListener(mark_p[i], person[i][0] + findDistance(person[i][1], person[i][2]));
+			}else{
+				var mark_a = new google.maps.Marker({
+					title: "ME",
+					map: map,
+					icon: "smolballoon.png", // TODO make transparent bg
+					position: new google.maps.LatLng(mylat,mylng),
+					clickable: true
+				});
+				attachListener(mark_a, "<p>GLORIA_FLETCHER</p>" + findNearestLandmark());
+			}
+		}	
+		for (i = 0; i < landmark.length; i++){
+				mark_l[i] = new google.maps.Marker({
+					title: landmark[i][1],
+					map: map,
+					icon: "icecream.jpeg",
+					position: new google.maps.LatLng(landmark[i][0][1],landmark[i][0][0]),
+					clickable: true
+				});
+				attachListener(mark_l[i], landmark[i][2]);
 		}
-	}
-	for (i = 0; i < landmark.length; i++){
-			mark_l[i] = new google.maps.Marker({
-				title: landmark[i][1],
-				map: map,
-				icon: "icecream.jpeg",
-				position: new google.maps.LatLng(landmark[i][0][1],landmark[i][0][0]),
-				clickable: true
-			});
-			attachListener(mark_l[i], landmark[i][2]);
-	}
 
 	//add content to respective infowindow
-	function attachListener(marker, content){
-		google.maps.event.addListener(marker, 'click', function(){
-			infowindow.setContent(content);
+		function attachListener(marker, content){
+			google.maps.event.addListener(marker, 'click', function(){
+				infowindow.setContent(content);
 			infowindow.open(map, this);
-		});
-	}
+			});
+		}
 
-
-	function findDistance(newlat, newlng){
+		function findDistance(newlat, newlng){
 		//calculate & return distance to me using haversine formula
-		return("<p>Distance to me is: " + haversine(newlat, newlng) + " meters.</p>"); // placeholder
-	}
+			return("<p>Distance to me is: " + haversine(newlat, newlng) + " miles.</p>"); // placeholder
+		}
 
-	function findNearestLandmark(){
+// return nearest landmark, also render polyline to same
+		function findNearestLandmark(){
 		// problem only returning first element in list!!  (or 2nd if starting @ 1,st, or last if tempdist < smallestdist)
-		// return nearest landmark, also render polyline to same
 
-		var temp_lat;
-		var temp_lng;
-		if(landmark.length >= 1){
-			var smallest_distance = haversine(landmark[0][0][1], landmark[0][0][0]);
-			var temp_nearest_landmark = landmark[0][1];
-			temp_lat = landmark[0][0][1];
-			temp_lng = landmark[0][0][0];
-		}
-
-		for(i = 1; i < landmark.length; i++){
-			var temp_dist = haversine(landmark[i][0][1], landmark[i][0][0]); // weirdly theyre already in order???
-			if (temp_dist < smallest_distance){
-				smallest_distance = temp_dist;
-				temp_nearest_landmark = landmark[i][1];
-				temp_lat = landmark[i][0][1];
-				temp_lng = landmark[i][0][0];
+			var temp_lat;
+			var temp_lng;
+			if(landmark.length >= 1){
+				var smallest_distance = haversine(landmark[0][0][1], landmark[0][0][0]);
+				var temp_nearest_landmark = landmark[0][1];
+				temp_lat = landmark[0][0][1];
+				temp_lng = landmark[0][0][0];
 			}
+
+			for(i = 1; i < landmark.length; i++){
+				var temp_dist = haversine(landmark[i][0][1], landmark[i][0][0]); // weirdly theyre already in order???
+				if (temp_dist < smallest_distance){
+					smallest_distance = temp_dist;
+					temp_nearest_landmark = landmark[i][1];
+					temp_lat = landmark[i][0][1];
+					temp_lng = landmark[i][0][0];
+				}
+			}
+			makePolyline(temp_lat,temp_lng);
+
+			return("<p>Distance to nearest landmark, which is " + temp_nearest_landmark + ", is: " + smallest_distance + " miles. </p>");
 		}
-		//var temp_latLng = new google.maps.latLng(temp_lat,temp_lng);
-		makePolyline(temp_lat,temp_lng);
 
+ 	//helper function for findX functions. takes coordinates, returns distance between them
+ 		function haversine(newlat, newlng){
+ 			var rad = 3959; // earth's radius in miles
+ 			var x = toRadians(mylat);
+ 			var y = toRadians(newlat);
+ 			var delta_lat = toRadians(newlat - mylat);
+ 			var delta_lng = toRadians(newlng - mylng);
 
-		return("<p>Distance to " + temp_nearest_landmark + " is: " + smallest_distance + " meters. </p>");
-	}
- 		//make infowindows for me, locations, people
+ 			function toRadians(degrees){
+				return degrees * Math.PI / 180;
+ 			}
 
- 		//helper function for findX functions. takes 
- 	function haversine(newlat, newlng){
- 		var rad = 6371000; // earth's radius in meters
- 		var x = toRadians(mylat);
- 		var y = toRadians(newlat);
- 		var delta_lat = toRadians(newlat - mylat);
- 		var delta_lng = toRadians(newlng - mylng);
+ 			a = Math.sin(delta_lat/2) * Math.sin(delta_lat/2) + Math.cos(x) * Math.cos(y) * Math.sin(delta_lng/2) * Math.sin(delta_lng/2);
 
- 		function toRadians(degrees){
- 			return degrees * Math.PI / 180;
+ 			c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+ 			return(rad * c);  //TODO: meters or km?
+
  		}
 
- 		a = Math.sin(delta_lat/2) * Math.sin(delta_lat/2) + Math.cos(x) * Math.cos(y) * Math.sin(delta_lng/2) * Math.sin(delta_lng/2);
-
- 		c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-
- 		return(rad * c);  //TODO: meters or km?
-
- 	}
-
- 	function makePolyline(newlat, newlng){
- 		var poly = new google.maps.Polyline({
- 	      path: [{lat: mylat, lng: mylng},
+ 	//renders polyline between my coordinates & parameter coordinates
+ 		function makePolyline(newlat, newlng){
+ 			var poly = new google.maps.Polyline({
+ 		      path: [{lat: mylat, lng: mylng},
  	      		{lat: newlat, lng: newlng}
  	      		], 
-  		  strokeColor: '#00ff00',
-  		  strokeOpacity: 1,
-  		  strokeWeight: 4,
-   		  map: map
- 		 });
+  			  strokeColor: '#00ff00',
+  			  strokeOpacity: 1,
+  			  strokeWeight: 4,
+   			  map: map
+ 			 });
 
- 		poly.setMap(map);
- 	}
-
-}
+ 			poly.setMap(map);
+ 		}
+	}
 	</script>
 </div>
 </body>

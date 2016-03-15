@@ -4,7 +4,7 @@ Modified by: Laura Donovan
 
 On: 3/15/2016
 
-Correctly implemented: implement navigator.geolocation, send location to datastore and parse response,  put parsed data into associative arrays, load map, place marker for myself/places/people, make 1 info window total whose information updates for each object clicked on, haversine formula, polyline renders
+Correctly implemented: implement navigator.geolocation, send location to datastore and parse response,  put parsed data into associative arrays, load map, place marker for myself/landmarks/people, make 1 info window whose information updates for each object clicked on, implement haversine formula, polyline renders
 
 Incorrectly implemented: transparent images, potential bug in "findnearestlandmark" ?
 

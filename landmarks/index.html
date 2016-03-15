@@ -81,7 +81,7 @@
 				position: new google.maps.LatLng(person[i][1],person[i][2]),
 				clickable: true
 			});
-			attachListener(mark_p[i], person[i][0] + findDistance());
+			attachListener(mark_p[i], person[i][0] + findDistance(person[i][1], person[i][2]));
 		}else{
 			var mark_a = new google.maps.Marker({
 				title: "ME",
@@ -112,19 +112,59 @@
 		});
 	}
 
-}
-	function findDistance(){
+
+	function findDistance(newlat, newlng){
 		//calculate & return distance to me using haversine formula
-		return("<p>Distance to me is: </p>"); // placeholder
+		return("<p>Distance to me is: " + haversine(newlat, newlng) + " meters.</p>"); // placeholder
 	}
 
 	function findNearestLandmark(){
+		// problem only returning first element in list!!  (or 2nd if starting @ 1,st, or last if tempdist < smallestdist)
 		// return nearest landmark, also render polyline to same
-		return("<p>Distance to nearest landmark is: </p>");
+		if(landmark.length >= 1){
+			var smallest_distance = haversine(landmark[0][0][1], landmark[0][0][0]);
+			var temp_nearest_landmark = landmark[0][1];
+		}
+
+		for(i = 1; i < landmark.length; i++){
+			var temp_dist = haversine(landmark[i][0][1], landmark[i][0][0]); // weirdly theyre already in order???
+			console.log("t: " + temp_dist);
+			if (temp_dist < smallest_distance){
+				smallest_distance = temp_dist;
+				temp_nearest_landmark = landmark[i][1];
+			}
+		}
+
+
+		return("<p>Distance to " + temp_nearest_landmark + " is: " + smallest_distance + " meters. </p>");
 	}
  		//make infowindows for me, locations, people
 
-	
+ 		//helper function for findX functions. takes 
+ 	function haversine(newlat, newlng){
+ 		var rad = 6371000; // earth's radius in meters
+ 		var x = toRadians(mylat);
+ 		var y = toRadians(newlat);
+ 		var delta_lat = toRadians(newlat - mylat);
+ 		var delta_lng = toRadians(newlng - mylng);
+
+ 		function toRadians(degrees){
+ 			return degrees * Math.PI / 180;
+ 		}
+
+ 		a = Math.sin(delta_lat/2) * Math.sin(delta_lat/2) + Math.cos(x) * Math.cos(y) * Math.sin(delta_lng/2) * Math.sin(delta_lng/2);
+
+ 		c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+ 		return(rad * c);  //TODO: meters or km?
+
+ 	}
+
+ 	function renderPolyline(){
+
+ 	}
+
+}
 	</script>
 </div>
 </body>

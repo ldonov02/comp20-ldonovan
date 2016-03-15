@@ -4,9 +4,9 @@ Modified by: Laura Donovan
 
 On: 3/14/2016
 
-Correctly implemented: implement navigator.geolocation, (almost)send location to datastore and parse response,  put parsed data into associative arrays, load map
-Incorrectly implemented: place markers for people and landmarks on map, feed result of geolocation into the datastore function, 
+Correctly implemented: implement navigator.geolocation, (almost)send location to datastore and parse response,  put parsed data into associative arrays, load map, place marker for myself
+Incorrectly implemented: place markers for people and landmarks on map,
 
 Collaborated with: Javascript code influenced by implementation of Haversine formula at http://www.movable-type.co.uk/scripts/latlong.html. Credit to this guy on stackoverflow http://stackoverflow.com/questions/22688581/how-do-i-make-an-info-window-in-google-maps-bigger. https://developers.google.com/maps/tutorials/customizing/custom-markers#customize_marker_icons_for_different_markers
 
-Time spent: 5.5 hours
+Time spent: 6.5 hours

@@ -14,17 +14,11 @@
 	<script src="https://maps.googleapis.com/maps/api/js"></script>
 	<script>
 		elem = document.getElementById("map");
-	//	me = [];
-		//me.push("name":"GLORIA_FLETCHER");
-	//	me.lat = locateMe("latitude");
-	//	me.long = locateMe("longitude");
-		//console.log(me);
+
 		locateMe();
-		dataExchange();
 		 person = [];
 		 landmark = [];
 		 mark_p = [];
-		makeMap();
 
 
 //find current location and set position
@@ -41,13 +35,18 @@
 					//if (parameter == "longitude"){
 				//		return(pos.coords.longitude);
 					//}
+					mylat = pos.coords.latitude;
+					mylng = pos.coords.longitude;
+					param = "login=GLORIA_FLETCHER&lat=" + mylat + "&lng=" + mylng;
+					dataExchange(param);
+					makeMap(param);
 				});
 			} else {
 				document.getElementById("map").innerHTML = "Oops! Geolocation not supported!";
 			}
 		}
 	// send my location to datastore and receive/parse list of people and landmarks
-		function dataExchange(){
+		function dataExchange(param){
 
 		//	coords = "";
 		//	coords = locateMe();
@@ -58,7 +57,8 @@
 			request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 		
 			request.onreadystatechange = parseResponse; 
-				request.send("login=GLORIA_FLETCHER&lat=42.404976999999995&lng=-71.1224457"); //TODO edit send so it calls locateMe!!
+			//	request.send("login=GLORIA_FLETCHER&lat=42.404976999999995&lng=-71.1224457"); //TODO edit send so it calls locateMe!!
+			request.send(param);
 			function parseResponse(){
 				if (request.readyState == 4 && request.status == 200){
 					data = request.responseText;
@@ -76,16 +76,17 @@
 
 					}
 					console.log(person);
+					console.log(landmark);
 				}	
 			}
 		}
 	function makeMap(){
-  	var ctr = new google.maps.LatLng(42.404976999999995,-71.122445); // TODO replace w values from locateMe!!
+  	var ctr = new google.maps.LatLng(mylat,mylng); 
   	var options = {
   		center: ctr,
-  		zoom: 9
+  		zoom: 11
   	}
-	base_map = new google.maps.Map(document.getElementById("map"), options);
+	map = new google.maps.Map(document.getElementById("map"), options);
 
 	/*for (i = 0; i < person.length; i++){
 		mark_p[i] = new google.maps.Marker({
@@ -100,10 +101,11 @@
 	
 	 //marker.setPosition(new google.maps.LatLng(42.404976999999995,-71.122445));
 
-	mark_a = new google.maps.Marker({
+	var mark_a = new google.maps.Marker({
 		title: "ME",
-		icon: iconBase + "balloon.png",
-		position: new google.maps.LatLng(34.1183438,-118.3003646)
+		map: map,
+		icon: "smolballoon.png", // TODO make transparent bg
+		position: new google.maps.LatLng(mylat,mylng)
 	});
 		// make markers for people from arrays in data exchange w forloop
 		//make sure that the marker for me gets overridden with the distance to nearest landmark thing! & special icon

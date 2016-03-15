@@ -13,8 +13,6 @@
 
 	<script src="https://maps.googleapis.com/maps/api/js"></script>
 	<script>
-		elem = document.getElementById("map");
-
 		locateMe();
 		 person = [];
 		 landmark = [];
@@ -26,16 +24,6 @@
 		function locateMe(){
 			if (navigator.geolocation){
 				navigator.geolocation.getCurrentPosition(function(pos){
-					//elem.innerHTML = "Latitude: " + pos.coords.latitude + "<br> Longitude: " + pos.coords.longitude;
-					//console.log(pos.coords);
-					//return(pos.coords.latitude + "," + pos.coords.longitude);
-					//elem.innerHTML = "" + pos.coords.latitude + "," + pos.coords.longitude;
-				//	if (parameter == "latitude"){
-					//	return(pos.coords.latitude);
-					//}
-					//if (parameter == "longitude"){
-				//		return(pos.coords.longitude);
-					//}
 					mylat = pos.coords.latitude;
 					mylng = pos.coords.longitude;
 					param = "login=GLORIA_FLETCHER&lat=" + mylat + "&lng=" + mylng;
@@ -82,6 +70,8 @@
   		zoom: 12
   	}
 	map = new google.maps.Map(document.getElementById("map"), options);
+	infowindow = new google.maps.InfoWindow(); 
+	//create markers
 	for (i = 0; i < person.length; i++){
 		if (person[i][0] != "GLORIA_FLETCHER"){
 			mark_p[i] = new google.maps.Marker({
@@ -91,6 +81,7 @@
 				position: new google.maps.LatLng(person[i][1],person[i][2]),
 				clickable: true
 			});
+			attachListener(mark_p[i], person[i][0] + findDistance());
 		}else{
 			var mark_a = new google.maps.Marker({
 				title: "ME",
@@ -99,6 +90,7 @@
 				position: new google.maps.LatLng(mylat,mylng),
 				clickable: true
 			});
+			attachListener(mark_a, "<p>GLORIA_FLETCHER</p>" + findNearestLandmark());
 		}
 	}
 	for (i = 0; i < landmark.length; i++){
@@ -109,33 +101,30 @@
 				position: new google.maps.LatLng(landmark[i][0][1],landmark[i][0][0]),
 				clickable: true
 			});
+			attachListener(mark_l[i], landmark[i][2]);
 	}
 
-	infowindow = new google.maps.InfoWindow();
-	google.maps.event.addListener(marker, 'click',function(){
-		if(this.icon == "icecream.jpeg"){
-			infowindow.setContent(this.title[2]); // prob not legal but need to show details
-		}
-		if (this.icon == "smolballoon.png"){
-			infowindow.setContent("<p>GLORIA_FLETCHER</p>" + findNearestLandmark());
-		}
-		if (this.icon == "partyhat.jpg"){
-			infowindow.setContent(this.title, findDistance());
-		}
-			infowindow.setContent(this.title);
-		infowindow.open(map, this);
-	});
+	//add content to respective infowindow
+	function attachListener(marker, content){
+		google.maps.event.addListener(marker, 'click', function(){
+			infowindow.setContent(content);
+			infowindow.open(map, this);
+		});
+	}
 
-	function findDistance{
+}
+	function findDistance(){
 		//calculate & return distance to me using haversine formula
+		return("<p>Distance to me is: </p>"); // placeholder
 	}
 
-	function findNearestLandmark{
+	function findNearestLandmark(){
 		// return nearest landmark, also render polyline to same
+		return("<p>Distance to nearest landmark is: </p>");
 	}
  		//make infowindows for me, locations, people
 
-	}
+	
 	</script>
 </div>
 </body>

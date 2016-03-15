@@ -61,15 +61,11 @@
 
 					parsedData = JSON.parse(data);
 					for(i = 0; i < parsedData["people"].length; i++){
-					//	person["name"] = parsedData["people"][i]["login"];
-					//create marker for each person
 					 var temp_array_p = [parsedData["people"][i]["login"], parsedData["people"][i]["lat"], parsedData["people"][i]["lng"]];
 					person.push(temp_array_p);
 					} for (i = 0; i < parsedData["landmarks"].length; i++){
 						var temp_array_l = [parsedData["landmarks"][i]["geometry"]["coordinates"], parsedData["landmarks"][i]["properties"]["Location_Name"], parsedData["landmarks"][i]["properties"]["Details"]];
 						landmark.push(temp_array_l);
-						//create marker for each landmark
-
 					}
 					console.log(person);
 					console.log(landmark);
@@ -77,6 +73,8 @@
 				}	
 			}
 		}
+
+ // initialize map, put markers, make infowindow
 	function makeMap(){
   	var ctr = new google.maps.LatLng(mylat,mylng); 
   	var options = {
@@ -90,14 +88,16 @@
 				title: person[i][0],
 				map: map,
 				icon: "partyhat.jpg",
-				position: new google.maps.LatLng(person[i][1],person[i][2])			
+				position: new google.maps.LatLng(person[i][1],person[i][2]),
+				clickable: true
 			});
 		}else{
 			var mark_a = new google.maps.Marker({
 				title: "ME",
 				map: map,
 				icon: "smolballoon.png", // TODO make transparent bg
-				position: new google.maps.LatLng(mylat,mylng)
+				position: new google.maps.LatLng(mylat,mylng),
+				clickable: true
 			});
 		}
 	}
@@ -106,20 +106,34 @@
 				title: landmark[i][1],
 				map: map,
 				icon: "icecream.jpeg",
-				position: new google.maps.LatLng(landmark[i][0][1],landmark[i][0][0])
+				position: new google.maps.LatLng(landmark[i][0][1],landmark[i][0][0]),
+				clickable: true
 			});
 	}
 
+	infowindow = new google.maps.InfoWindow();
+	google.maps.event.addListener(marker, 'click',function(){
+		if(this.icon == "icecream.jpeg"){
+			infowindow.setContent(this.title[2]); // prob not legal but need to show details
+		}
+		if (this.icon == "smolballoon.png"){
+			infowindow.setContent("<p>GLORIA_FLETCHER</p>" + findNearestLandmark());
+		}
+		if (this.icon == "partyhat.jpg"){
+			infowindow.setContent(this.title, findDistance());
+		}
+			infowindow.setContent(this.title);
+		infowindow.open(map, this);
+	});
 
+	function findDistance{
+		//calculate & return distance to me using haversine formula
+	}
 
-	
-	 //marker.setPosition(new google.maps.LatLng(42.404976999999995,-71.122445));
-
-
-		// make markers for people from arrays in data exchange w forloop
-		//make sure that the marker for me gets overridden with the distance to nearest landmark thing! & special icon
-		// make markers for landmarks from array in data exchange
-		//place those on map according to location. 
+	function findNearestLandmark{
+		// return nearest landmark, also render polyline to same
+	}
+ 		//make infowindows for me, locations, people
 
 	}
 	</script>

@@ -9,23 +9,28 @@
 	<script>
 		$(document).ready(function(){
 			var message;
-		
+			$("#log").html(localStorage.getItem("log"));
+			console.log(localStorage.log);
+				
+
+
 			$("#msg").keydown(function(event){
   				if ( event.which == 13 ) { // enter key is pressed
-    				 message = $("#msg").val(); 
-    				 current_time = getCurrTime();
+    				message = $("#msg").val(); 
+    				current_time = getCurrentTime();
     				$("#log").prepend("<p>" + current_time + " - " + message + "</p>");
- 				 	localStorage.log = $("log").val();
- 				 	$("log").val(localStorage.log);
-    				// does entrybox have to clear itself??
+    				localStorage.setItem("log", $("#log").html());
+
  				}
 
- 				 function getCurrTime(){ 
+ 				function getCurrentTime(){ 
  				 	var time = new Date();
- 				 	 months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-					 curr_month = months[time.getMonth()];
- 				 	 return curr_month + " " + time.getDay() + ", " + time.getFullYear() + " " + ("0" + time.getHours()).slice(-2) + ":" +  ("0" + time.getMinutes()).slice(-2) + ":" + ("0" + time.getSeconds()).slice(-2);
- 				 }
+ 				 	days = ["Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"];
+ 				 	months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+ 				 	curr_day = days[time.getDay()];
+					curr_month = months[time.getMonth()];
+ 				 	return curr_day + ", " + curr_month + " " + time.getDate() + ", " + time.getFullYear() + " " + ("0" + time.getHours()).slice(-2) + ":" +  ("0" + time.getMinutes()).slice(-2) + ":" + ("0" + time.getSeconds()).slice(-2);
+ 				}
 			});
 
 		});

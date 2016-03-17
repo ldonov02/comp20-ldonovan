@@ -2,13 +2,13 @@
 
 Modified by: Laura Donovan
 
-On: 3/16/2016
+On: 3/17/2016
 
-Correctly implemented:
+Correctly implemented: Getting timestamp
 
-Incorrectly implemented:
+Incorrectly implemented: using jquery to get message and put in log, putting inputted text into local storage
 
 
-Collaborated with:
+Collaborated with: Tom Rind, http://stackoverflow.com/questions/3605214/javascript-add-leading-zeroes-to-date.
 
-Hours spent: .5
+Hours spent: 1.5

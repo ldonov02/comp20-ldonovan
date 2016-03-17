@@ -8,17 +8,26 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
 	<script>
 		$(document).ready(function(){
-		var time = new Date();
-		var message;
-	
-		months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-		curr_month = months[time.getMonth()];
-		if (time.getMinutes < 10){
-			minutes = 0 + "" + time.getMinutes();
-		}
-		var timestamp = curr_month + " " + time.getDay() + ", " + time.getFullYear() + " " + ("0" + time.getHours()).slice(-2) + ":" +  ("0" + time.getMinutes()).slice(-2) + ":" + ("0" + time.getSeconds()).slice(-2);
+			var time = new Date();
+			var message;
 
-			$("#msg").get;
+		
+			$("#msg").keydown(function(event){
+  				if ( event.which == 13 ) { // enter key is pressed
+    				var message = $("#msg").get();
+    				$("#log").prepend("<p>" + getCurrTime() + ' - ' + message + "</p>");
+ 				}
+
+ 				 function getCurrTime(){
+ 				 	 months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+					 curr_month = months[time.getMonth()];
+				   	 if (time.getMinutes < 10){
+					     minutes = 0 + "" + time.getMinutes();
+					 }
+ 				 	 return curr_month + " " + time.getDay() + ", " + time.getFullYear() + " " + ("0" + time.getHours()).slice(-2) + ":" +  ("0" + time.getMinutes()).slice(-2) + ":" + ("0" + time.getSeconds()).slice(-2);
+ 				 }
+
+			});
 
 		});
 	</script>

@@ -18,6 +18,7 @@
     				message = $("#msg").val(); 
     				current_time = getCurrentTime();
     				$("#log").prepend("<p>" + current_time + " - " + message + "</p>");
+    				$("#msg").val("");
     				localStorage.setItem("log", $("#log").html());
 
  				}

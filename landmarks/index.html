@@ -36,7 +36,7 @@
 		function dataExchange(param){
 	
 			request = new XMLHttpRequest;
-			request.open("post", "https://defense-in-derpth.herokuapp.com/sendLocation", true);
+			request.open("post", "https://apple-cupcake-16936.herokuapp.com/sendLocation", true);
 			request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 		
 			request.onreadystatechange = parseResponse; 
@@ -126,7 +126,7 @@
 				temp_lng = landmark[0][0][0];
 			}
 
-			for(i = 1; i < landmark.length; i++){
+			for(var i = 1; i < landmark.length; i++){
 				var temp_dist = haversine(landmark[i][0][1], landmark[i][0][0]); // weirdly theyre already in order???
 				if (temp_dist < smallest_distance){
 					smallest_distance = temp_dist;
@@ -135,6 +135,7 @@
 					temp_lng = landmark[i][0][0];
 				}
 			}
+			console.log("finished loop");
 			makePolyline(temp_lat,temp_lng);
 
 			return("<p>Distance to nearest landmark, which is " + temp_nearest_landmark + ", is: " + smallest_distance + " miles. </p>");
@@ -162,6 +163,7 @@
 
  	//renders polyline between my coordinates & parameter coordinates
  		function makePolyline(newlat, newlng){
+ 			console.log("polyline");
  			var poly = new google.maps.Polyline({
  		      path: [{lat: mylat, lng: mylng},
  	      		{lat: newlat, lng: newlng}

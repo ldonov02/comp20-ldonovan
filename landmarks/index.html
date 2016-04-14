@@ -34,7 +34,6 @@
 		}
 	// send my location to datastore and receive/parse list of people and landmarks
 		function dataExchange(param){
-	
 			request = new XMLHttpRequest;
 			request.open("post", "https://apple-cupcake-16936.herokuapp.com/sendLocation", true);
 			request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -44,7 +43,6 @@
 			function parseResponse(){
 				if (request.readyState == 4 && request.status == 200){
 					data = request.responseText;
-
 					parsedData = JSON.parse(data);
 					for(i = 0; i < parsedData["people"].length; i++){
 					 var temp_array_p = [parsedData["people"][i]["login"], parsedData["people"][i]["lat"], parsedData["people"][i]["lng"]];
@@ -135,7 +133,6 @@
 					temp_lng = landmark[i][0][0];
 				}
 			}
-			console.log("finished loop");
 			makePolyline(temp_lat,temp_lng);
 
 			return("<p>Distance to nearest landmark, which is " + temp_nearest_landmark + ", is: " + smallest_distance + " miles. </p>");
@@ -163,7 +160,6 @@
 
  	//renders polyline between my coordinates & parameter coordinates
  		function makePolyline(newlat, newlng){
- 			console.log("polyline");
  			var poly = new google.maps.Polyline({
  		      path: [{lat: mylat, lng: mylng},
  	      		{lat: newlat, lng: newlng}

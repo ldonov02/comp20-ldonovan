@@ -8,59 +8,67 @@
 <body>
 	<h1>Assignment 4: Security</h1>
 	<h4>by Laura Donovan, 4/26/2016</h4>
-	<h2>Introduction</h2> <!-- Provide a description of the product and what you were hired to do Provide a description of the product and what you were hired to do-->
-		<p>This is a security assessment of M. Pokharen's web application, <a href="http://pure-woodland-98314.herokuapp.com/">Landmarks</a>. The purpose of this web application is to take in users' login, latitude, and longitude, insert it into a database, and use that cumulative user information to render markers for users as well as for nearby historical landmarks on a map.</p>
-		<p>My task was to find security and privacy issues with this web application.</p>
-	<h2>Methodology</h2> <!--Describe your methodology pen testing the application, including the tools that you used-->
-		<p>First, I performed black-box testing: because the default page on the web application showed multiple users' logins, latitudes, and longitudes, I knew that these fields were being entered into a database. I used curl to insert my own HTML or JavaScript code into the database. Then, I looked at the source code.</p> <script>alert("FINISH THIS AFTER FINDING 3RD VULNERABILITY");</script>
-	<h2>Abstract of Findings</h2> <!--Abstract of Findings - Provide an overview of all the security and privacy issues you identified. This section should be written for non-technical managers who do not have technical expertise and do not have time to read the entire document. Write this section using lay language.-->
-		<p>Many of the issues found had to do with not scrutinizing user input/replacing non-alphanumeric characters and giving users direct access to database information and the application as a whole. </p>
-	<h2>Issues Found</h2> <!--
-        Issue (e.g., database injection, really bad programming practice)
-        Location / page where issue was found
-        Severity of issue (e.g., low, medium , or high). Justify your answer.
-        Description of issue. How did you find it? A screenshot of problem is excellent.
-        Proof of vulnerability. Screenshots are important.
-        Resolution. Make recommendation(s) on how issue can be resolved. Show code if possible.-->
+	<h2>Introduction</h2> 
+		<p>This is a security assessment of M. Pokharen's web application, <a href="http://pure-woodland-98314.herokuapp.com/">Landmarks</a>. The purpose of this web application is to take in users' login, latitude, and longitude, insert them into a database, and use that cumulative user information to render markers for users as well as for nearby historical landmarks on a map. My task was to find security and privacy issues with this web application.</p>
+	<h2>Methodology</h2> 
+		<p>First, I performed black-box testing: I knew that logins, latitudes, and longitudes were being entered into a database because the default page on the web application showed multiple entries with those same keys. I used curl to insert my own HTML or JavaScript code into the database. Then, I looked over the source code.</p> 
+	<h2>Abstract of Findings</h2>
+		<p>Many of the security issues with this web application have to do with not scrutinizing user input or replacing non-alphanumeric characters, as well as giving users direct access to database information and the application as a whole. In terms of privacy issues, user information is displayed right on the home and checkins pages; additionally, the MongoDB username/password are coded into the document.</p>
+	<h2>Issues Found</h2> 
 		<ul>
-			<li>Issue #1: Injection</li>
+			<li><span class='issue'>Issue #1: Injection</span></li>
 			<ul>
 				<li>Location: This issue is in the POST API ('/sendLocation').</li>
-				<li>Severity: Moderate-- in this case, I only injected HTML code but this could be much worse, involving alteration of existing database records.</li> <!--justify-->
-				<li>Description of issue: The three key-value pairs posted to /sendLocation are not checked or sanitized, just inserted as-is into the checkins database. Instead of one's real login/latitude/longitude, a user can input their own HTML (or NoSQL) code or just bad data, altering the veracity of the map's representation of user information or even compromising the collection itself. </li>
-				<li>Proof of vulnerability: <br><img src="injection_example.png" alt="injection"></li> 
-				<li>Resolution: check and sanitize user input. <script>alert("give recommended code!!!");</script></li>
+				<li>Severity: High. In this case, I only injected HTML but noSQL code could be injected, too, which could involve insertion and deletion of database records.</li> 
+				<li>Description of issue: The three key-value pairs posted to /sendLocation are not checked or sanitized, just inserted as-is into the checkins database. Instead of one's true login/latitude/longitude, a user can input their own HTML/NoSQL code or just bad data, altering the veracity of the map's representation of user information and potentially compromising the collection itself. </li>
+				<li>Proof of vulnerability: <br><img src="injection_example.png" alt="injected HTML on home page reads 'xoxo gossip girl'"></li> 
+				<li>Resolution: check and sanitize user input. One way (not the most efficient, maybe, but still effective) to do so could be by implementing the following code: <pre>
+					<code>function Sanitize(input){ 
+						for (var i = 0; i &lt; input.length; i++){
+							if (input[i] == '&amp;')
+								input[i] = '& amp ;';
+							else if (input[i] == '&lt;')
+								input[i] = '& lt ;';
+							else if (input[i] == '&gt;')
+								input[i] = '& gt ;';
+							else if (input[i] == '&quot;')
+								input[i] = '& quot ;';
+							else if (input[i] == '&#39;')
+								input[i] = '& #39 ;';
+						}
+					}</code>(NOTE: to use code above, remove spaces after ampersands and before semicolons; those are solely there to prevent the encodings from rendering as the characters)</pre><br>Then, one could apply this function to any user input to remove special characters and render it ineffective.</li>
 				<br>
 			</ul>
-			<li>Issue #2: Cross-Site Scripting</li>
+			<li><span class='issue'>Issue #2: Cross-Site Scripting</span></li>
 			<ul>
 				<li>Location: inputted at '/sendLocation', but shown to user in both GET APIs.</li>
-				<li>Severity: High. This is one of OWASP's top security risks. The perpetrator can redirect users of the website to other, unsafe websites, access their cookies, or just spam them with alerts. </li> <!--justify-->
+				<li>Severity: High. This is one of OWASP's top security risks. An attacker could redirect users of the website to unsafe websites, access their cookies, or just spam them with alerts. </li> 
 				<li>Description of issue: the POST API takes three key-value pairs and inserts them into the database; the '/' and '/checkins.json' GET APIs display relevant/all records in that database, allowing for unscrutinized, user-inputted JavaScript to possibly be executed on those routes.  </li>
-				<li>Proof of vulnerability: <br><img src="xss_example.png" alt="XSS"></li>
+				<li>Proof of vulnerability: <br><img src="xss_example.png" alt="a popup window on Heroku home page"></li>
 				<li>Resolution: Sanitize user input. See previous resolution. </li>
 				<br>
 			</ul>
-			<li>Issue #3: Insecure Direct Object References</li>
+			<li><span class='issue'>Issue #3: Insecure Direct Object References</span></li>
 			<ul>
 				<li>Location: the '/checkins.json' GET API</li>
-				<li>Severity: Moderate. Can be used to facilitate injection or cross-site scripting.</li> <!--justify-->
+				<li>Severity: Moderate. Can be used to facilitate injection or cross-site scripting, but on its own is not world-ending.</li> 
 				<li>Description of issue: The route '/checkins.json' spits out unmodified JSON data from the collection and thus  directly displays the keys 'login,' 'lat,' and 'lng' without modifying the key name. This directly provides any potential attacker with the keys they would need to access the database in a fraudulent POST request.</li>
-				<li>Proof of vulnerability:<br><img src="insecure_reference_example.png" alt="insecure direct object reference"></li>
+				<li>Proof of vulnerability:<br><img src="insecure_reference_example.png" alt="reference to login, lat, and lng in /checkins.json"></li>
 				<li>Resolution: Do not directly output JSON data from the database. Modify key names to something that conveys the same idea but, if used in a POST request, would not allow access to the database. For instance, instead of saying "login," "lat," and "lng," one could write "username," "latitude," and "longitude." This would prevent unauthorized reference to these keys while conserving meaning.</li>
 				<br>
 			</ul>
-			<li>Issue #4: Bad coding practice</li>
+			<li><span class='issue'>Issue #4: Bad coding practice</span></li>
 			<ul>
-				<li>Location: Response header.<script>alert("WRITE IT");</script></li>
-				<li>Severity: Moderate. This could allow any domain to access the site and thus risks Cross-Site Request Forgery.</li> <!--justify-->
+				<li>Location: Response header.</li>
+				<li>Severity: Moderate. This could allow any domain to access the site and thus risks Cross-Site Request Forgery.</li> 
 				<li>Description of issue: All domains are allowed to access/post to the web application, including those which are untrusted. </li>
-				<li>Proof of vulnerability: <br><img src="csrf_risk_example.png" ref="risks CSRF"></li>
+				<li>Proof of vulnerability: <br><img src="csrf_risk_example.png" ref="Access-Control-Allow-Origin, *"></li>
 				<li>Resolution: Replace the '*' with a whitelist of trusted domains.</li>
 			</ul>
 		</ul>
-	<h2>Conclusion</h2> <!--You can also list future considerations and recommendations with costs.-->
-		<p></p>
-
+	<h2>Conclusion</h2> 
+		<p>There are also privacy concerns, such as listing people's geolocation and the exact time when they were there-- it might be better to not give exact latitude and longitude, or give an approximation of the time. Also, hardcoding one's MongoDB username and password could let an attacker steal them and then access your database. This could be remedied by not including that URI. </p>
+		<p>In conclusion, this web application's security issues can be mostly fixed by restricting user access to back-end code and sanitizing user input. As it stands, the existence of these security issues makes it difficult to ensure the legitimacy of records on the GET APIs and user markers on the map. </p>
+		<br>
 </body>
 </html>

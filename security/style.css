@@ -1,3 +1,11 @@
 body{
 	background-color: #e6faff;
 }
+
+.issue{
+	text-decoration: underline;
+}
+
+h4{
+	font-weight:normal;
+}

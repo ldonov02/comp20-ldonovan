@@ -3,16 +3,18 @@
 <head>
 	<title>Security</title>
 	<meta charset="utf-8" />
+	<link rel="stylesheet" href="style.css" type="text/css" />
 </head>
 <body>
 	<h1>Assignment 4: Security</h1>
 	<h4>by Laura Donovan, 4/26/2016</h4>
 	<h2>Introduction</h2> <!-- Provide a description of the product and what you were hired to do Provide a description of the product and what you were hired to do-->
 		<p>This is a security assessment of M. Pokharen's web application, <a href="http://pure-woodland-98314.herokuapp.com/">Landmarks</a>. The purpose of this web application is to take in users' login, latitude, and longitude, insert it into a database, and use that cumulative user information to render markers for users as well as for nearby historical landmarks on a map.</p>
+		<p>My task was to find security and privacy issues with this web application.</p>
 	<h2>Methodology</h2> <!--Describe your methodology pen testing the application, including the tools that you used-->
 		<p>First, I performed black-box testing: because the default page on the web application showed multiple users' logins, latitudes, and longitudes, I knew that these fields were being entered into a database. I used curl to insert my own HTML or JavaScript code into the database. Then, I looked at the source code.</p> <script>alert("FINISH THIS AFTER FINDING 3RD VULNERABILITY");</script>
 	<h2>Abstract of Findings</h2> <!--Abstract of Findings - Provide an overview of all the security and privacy issues you identified. This section should be written for non-technical managers who do not have technical expertise and do not have time to read the entire document. Write this section using lay language.-->
-		<p>There were </p>
+		<p>Many of the issues found had to do with not scrutinizing user input/replacing non-alphanumeric characters and giving users direct access to database information and the application as a whole. </p>
 	<h2>Issues Found</h2> <!--
         Issue (e.g., database injection, really bad programming practice)
         Location / page where issue was found
@@ -20,32 +22,43 @@
         Description of issue. How did you find it? A screenshot of problem is excellent.
         Proof of vulnerability. Screenshots are important.
         Resolution. Make recommendation(s) on how issue can be resolved. Show code if possible.-->
-		<ol>
+		<ul>
 			<li>Issue #1: Injection</li>
 			<ul>
 				<li>Location: This issue is in the POST API ('/sendLocation').</li>
 				<li>Severity: Moderate-- in this case, I only injected HTML code but this could be much worse, involving alteration of existing database records.</li> <!--justify-->
-				<li>Description of issue: The three key-value pairs posted to /sendLocation are not checked or sanitized, just inserted as-is into the checkins database. A user can input their own HTML (or NoSQL) code or just bad data, altering the veracity of the map's representation of user information or even compromising the collection itself. </li>
-				<li>Proof of vulnerability: <img ref="injection_example.png" alt="injection"></li> 
+				<li>Description of issue: The three key-value pairs posted to /sendLocation are not checked or sanitized, just inserted as-is into the checkins database. Instead of one's real login/latitude/longitude, a user can input their own HTML (or NoSQL) code or just bad data, altering the veracity of the map's representation of user information or even compromising the collection itself. </li>
+				<li>Proof of vulnerability: <br><img src="injection_example.png" alt="injection"></li> 
 				<li>Resolution: check and sanitize user input. <script>alert("give recommended code!!!");</script></li>
+				<br>
 			</ul>
 			<li>Issue #2: Cross-Site Scripting</li>
 			<ul>
-				<li>Location: POST API</li>
-				<li>Severity: High. This is one of OWASP's top security risks. The user can </li> <!--justify-->
-				<li>Description of issue</li>
-				<li>Proof of vulnerability</li>
-				<li>Resolution</li>
+				<li>Location: inputted at '/sendLocation', but shown to user in both GET APIs.</li>
+				<li>Severity: High. This is one of OWASP's top security risks. The perpetrator can redirect users of the website to other, unsafe websites, access their cookies, or just spam them with alerts. </li> <!--justify-->
+				<li>Description of issue: the POST API takes three key-value pairs and inserts them into the database; the '/' and '/checkins.json' GET APIs display relevant/all records in that database, allowing for unscrutinized, user-inputted JavaScript to possibly be executed on those routes.  </li>
+				<li>Proof of vulnerability: <br><img src="xss_example.png" alt="XSS"></li>
+				<li>Resolution: Sanitize user input. See previous resolution. </li>
+				<br>
 			</ul>
-			<li>Issue #3: </li>
+			<li>Issue #3: Insecure Direct Object References</li>
 			<ul>
-				<li>Location</li>
-				<li>Severity</li> <!--justify-->
-				<li>Description of issue</li>
-				<li>Proof of vulnerability</li>
-				<li>Resolution</li>
+				<li>Location: the '/checkins.json' GET API</li>
+				<li>Severity: Moderate. Can be used to facilitate injection or cross-site scripting.</li> <!--justify-->
+				<li>Description of issue: The route '/checkins.json' spits out unmodified JSON data from the collection and thus  directly displays the keys 'login,' 'lat,' and 'lng' without modifying the key name. This directly provides any potential attacker with the keys they would need to access the database in a fraudulent POST request.</li>
+				<li>Proof of vulnerability:<br><img src="insecure_reference_example.png" alt="insecure direct object reference"></li>
+				<li>Resolution: Do not directly output JSON data from the database. Modify key names to something that conveys the same idea but, if used in a POST request, would not allow access to the database. For instance, instead of saying "login," "lat," and "lng," one could write "username," "latitude," and "longitude." This would prevent unauthorized reference to these keys while conserving meaning.</li>
+				<br>
 			</ul>
-		</ol>
+			<li>Issue #4: Bad coding practice</li>
+			<ul>
+				<li>Location: Response header.<script>alert("WRITE IT");</script></li>
+				<li>Severity: Moderate. This could allow any domain to access the site and thus risks Cross-Site Request Forgery.</li> <!--justify-->
+				<li>Description of issue: All domains are allowed to access/post to the web application, including those which are untrusted. </li>
+				<li>Proof of vulnerability: <br><img src="csrf_risk_example.png" ref="risks CSRF"></li>
+				<li>Resolution: Replace the '*' with a whitelist of trusted domains.</li>
+			</ul>
+		</ul>
 	<h2>Conclusion</h2> <!--You can also list future considerations and recommendations with costs.-->
 		<p></p>
 

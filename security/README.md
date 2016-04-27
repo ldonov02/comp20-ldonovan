@@ -4,10 +4,10 @@ Modified by: Laura Donovan
 
 On: 4/26/2016
 
-Correctly implemented:
+Correctly implemented: assess security vulnerabilities of pure-woodland-98314.herokuapp.com, write up findings/methodology
 
-Incorrectly implemented:
+Incorrectly implemented: conclusion not written
 
-Collaborators:
+Collaborators: N/A
 
-Time spent: 1 hour
+Time spent: 2.5 hours
